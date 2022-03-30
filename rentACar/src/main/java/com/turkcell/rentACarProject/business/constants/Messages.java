@@ -18,4 +18,7 @@ public class Messages {
 	public static final String RentalNotFound = "rental.not.found";
 	public static final String CityAdded = "city.added";
 	public static final String CreditCardAdded = "card.added";
+	public static final String RentalNotFoundCar = "rental.not.found.car";
+	public static final String AdditionalServiceItemAlreadyExists = "additional.service.item.already.exists";
+	public static final String AdditionalServiceItemIsNotFound = "additional.service.item.not.found";
 }

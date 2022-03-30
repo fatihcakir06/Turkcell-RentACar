@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.AdditionalServiceItemService;
+import com.turkcell.rentACarProject.business.constants.Messages;
 import com.turkcell.rentACarProject.business.dtos.additionalServiceItem.ListAdditionalServiceItemDto;
 import com.turkcell.rentACarProject.business.requests.additionalServiceItem.CreateAdditionalServiceItemRequest;
+import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarProject.core.utilities.results.DataResult;
 import com.turkcell.rentACarProject.core.utilities.results.ErrorDataResult;
@@ -34,18 +36,26 @@ public class AdditionalServiceItemManager implements AdditionalServiceItemServic
 
 	@Override
 	public Result add(CreateAdditionalServiceItemRequest createAdditionalServiceItemRequest) {
+		
+		checkIfAdditionalServiceItemExistsByName(createAdditionalServiceItemRequest.getName());
+		
 		AdditionalServiceItem additionalServiceItem = this.modelMapperService.forRequest().map(createAdditionalServiceItemRequest, AdditionalServiceItem.class);
 		this.additionalServiceItemDao.save(additionalServiceItem);
-		return new SuccessResult("");
+		return new SuccessResult();
 	}
 
 	@Override
 	public DataResult<ListAdditionalServiceItemDto> findById(int id) {
-		if(additionalServiceItemDao.existsById(id)) {
-			AdditionalServiceItem item = additionalServiceItemDao.findById(id).get();
+		
+		checkIfAdditionalServiceExistsById(id);
+		
+		AdditionalServiceItem item = additionalServiceItemDao.findById(id).get();
 			ListAdditionalServiceItemDto response = modelMapperService.forDto().map(item, ListAdditionalServiceItemDto.class);
+		
+		
+			
 			return new SuccessDataResult<ListAdditionalServiceItemDto>(response);
-		}else return new ErrorDataResult<ListAdditionalServiceItemDto>();
+		
 	}
 
 	@Override
@@ -59,6 +69,25 @@ public class AdditionalServiceItemManager implements AdditionalServiceItemServic
 		
 		return new SuccessDataResult<List<ListAdditionalServiceItemDto>>(response);
 	}
+	
+	private Result checkIfAdditionalServiceItemExistsByName(String itemName) {
+		
+		if (additionalServiceItemDao.existsByColorName(itemName)) {
+			throw new BusinessException(Messages.AdditionalServiceItemAlreadyExists);
+		}
+		
+		return new SuccessResult();
+	}
+	
+	private Result checkIfAdditionalServiceExistsById(int itemId) {
+        if(!this.additionalServiceItemDao.existsById(itemId)) {
+            throw new BusinessException(Messages.AdditionalServiceItemIsNotFound);
+        }  
+        return new SuccessResult();
+        
+    }
+	
+	
 
 	
 	

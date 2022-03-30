@@ -7,5 +7,5 @@ import com.turkcell.rentACarProject.entities.concretes.AdditionalServiceItem;
 
 @Repository
 public interface AdditionalServiceItemDao extends JpaRepository<AdditionalServiceItem	, Integer>{
-
+	boolean existsByColorName(String name);
 }

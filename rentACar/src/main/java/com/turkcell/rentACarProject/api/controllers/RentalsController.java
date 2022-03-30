@@ -68,9 +68,6 @@ public class RentalsController {
 		return this.rentalService.getById(id);
 	}
 
-	@GetMapping("/isRented")
-	Result isCarRented(int carId) throws BusinessException {
-		return this.rentalService.isCarRented(carId);
-	}
+	
 	
 }

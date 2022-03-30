@@ -38,13 +38,13 @@ public class RentalManager implements RentalService {
 	private AdditionalServiceItemService additionalServiceItemService;
 	private OrderedAdditionalServiceService orderedAdditionalServiceService;
 	private CarMaintenanceService carMaintenanceService;
-		
+
 	@Autowired
 	public RentalManager(RentalDao rentalDao, ModelMapperService modelMapperService,
-			@Lazy CarMaintenanceService carMaintenanceService, CarService carService, 
-			OrderedAdditionalServiceService orderedAdditionalServiceService, 
+			@Lazy CarMaintenanceService carMaintenanceService, CarService carService,
+			OrderedAdditionalServiceService orderedAdditionalServiceService,
 			AdditionalServiceItemService additionalServiceItemService) {
-		
+
 		this.rentalDao = rentalDao;
 		this.modelMapperService = modelMapperService;
 		this.carMaintenanceService = carMaintenanceService;
@@ -57,68 +57,69 @@ public class RentalManager implements RentalService {
 	public Result createForCorporateCustomer(CreateRentalRequest createRentalRequest) throws BusinessException {
 
 		carMaintenanceService.isCarInMaintenance(createRentalRequest.getCarId());
-		isCarRented(createRentalRequest.getCarId());   								
-		
-	    Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-	    this.rentalDao.save(rental);
-	    
-	    return new SuccessResult(Messages.RentalAdded);
+		isCarRented(createRentalRequest.getCarId());
+		checkCarIdExists(createRentalRequest.getCarId());
+
+		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
+		this.rentalDao.save(rental);
+
+		return new SuccessResult(Messages.RentalAdded);
 	}
 
 	@Override
 	public Result createForIndividualCustomer(CreateRentalRequest createRentalRequest) throws BusinessException {
-		
+
 		carMaintenanceService.isCarInMaintenance(createRentalRequest.getCarId());
 		isCarRented(createRentalRequest.getCarId());
-		
-	    Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
-	    this.rentalDao.save(rental);
-	    
-	    return new SuccessResult(Messages.RentalAdded);
+		checkCarIdExists(createRentalRequest.getCarId());
+
+		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
+		this.rentalDao.save(rental);
+
+		return new SuccessResult(Messages.RentalAdded);
 	}
-	
 
 	@Override
 	public Result delete(DeleteRentalRequest deleteRentalRequest) {
-		
+
 		Rental rental = this.modelMapperService.forRequest().map(deleteRentalRequest, Rental.class);
 		this.rentalDao.delete(rental);
-		
+
 		return new SuccessResult(Messages.RentalDeleted);
 	}
 
 	@Override
 	public Result update(UpdateRentalRequest updateRentalRequest) {
-		
+
 		carMaintenanceService.isCarInMaintenance(updateRentalRequest.getCarId());
-		
+
 		Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
 		rental.setTotalPrice(rentalCalculation(rental));
 		updateReturnMileage(rental);
 		this.rentalDao.save(rental);
-		
+
 		return new SuccessResult(Messages.CarUpdated);
 	}
 
 	@Override
 	public DataResult<List<ListRentalDto>> getAll() {
-		
+
 		var result = this.rentalDao.findAll();
 		List<ListRentalDto> response = result.stream()
 				.map(rental -> this.modelMapperService.forDto().map(rental, ListRentalDto.class))
 				.collect(Collectors.toList());
-		
+
 		return new SuccessDataResult<List<ListRentalDto>>(response);
 	}
-	
+
 	@Override
 	public DataResult<List<ListRentalDto>> getAllByCustomerId(int customerId) {
-		
+
 		var result = this.rentalDao.findAllByCustomerId(customerId);
 		List<ListRentalDto> response = result.stream()
 				.map(rental -> this.modelMapperService.forDto().map(rental, ListRentalDto.class))
 				.collect(Collectors.toList());
-		
+
 		return new SuccessDataResult<List<ListRentalDto>>(response);
 	}
 
@@ -126,17 +127,39 @@ public class RentalManager implements RentalService {
 	public DataResult<ListRentalDto> getById(int id) {
 
 		Rental result = this.rentalDao.getById(id);
-		
-		if(result == null) {
+
+		if (result == null) {
 			return new ErrorDataResult<ListRentalDto>(Messages.RentalNotFound);
 		}
-		
+
 		ListRentalDto response = this.modelMapperService.forDto().map(result, ListRentalDto.class);
 		return new SuccessDataResult<ListRentalDto>(response);
 	}
 
+	@Override
+	public Result isCarRented(int id)  {
+
+		if (this.rentalDao.findByCarIdAndReturnDateIsNull(id) != null) {
+			throw new BusinessException(Messages.ThisCarIsRental);
+		} else
+			return new SuccessResult();
+	}
+
+	private void updateReturnMileage(Rental rental) {
+
+		carService.getById(rental.getCar().getId()).getData().setMileage(rental.getReturnMileage());
+	}
+
+	private void checkCarIdExists(int carId) {
+
+		if (!this.carService.getById(carId).isSuccess()) {
+			throw new BusinessException(Messages.RentalNotFoundCar);
+		}
+
+	}
+
 	private double rentalCalculation(Rental rental) {
-		
+	
 		double totalPrice = 0;
 		
 		List<ListOrderedAdditionalServiceDto> orderedAdditionalServiceDtos = orderedAdditionalServiceService.findAllByRentalId(rental.getId()).getData();
@@ -158,20 +181,6 @@ public class RentalManager implements RentalService {
 		totalPrice += days * carService.getById(rental.getCar().getId()).getData().getCarDailyPrice();
 
 		return totalPrice;
-	}
-	
-	@Override
-	public Result isCarRented(int id) throws BusinessException {
-		
-		if(this.rentalDao.findByCarIdAndReturnDateIsNull(id) != null) {
-			throw new BusinessException(Messages.ThisCarIsRental);
-		}
-		else
-			return new SuccessResult();
-	}
-	private void updateReturnMileage(Rental rental) {
-		
-		carService.getById(rental.getCar().getId()).getData().setMileage(rental.getReturnMileage());
 	}
 
 }
