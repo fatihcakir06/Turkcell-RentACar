@@ -14,6 +14,8 @@ import com.turkcell.rentACarProject.business.abstracts.CarService;
 import com.turkcell.rentACarProject.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentACarProject.business.abstracts.PaymentService;
 import com.turkcell.rentACarProject.business.abstracts.RentalService;
+import com.turkcell.rentACarProject.business.constants.Messages;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.orderedAdditionalService.ListOrderedAdditionalServiceDto;
 import com.turkcell.rentACarProject.business.dtos.payment.ListPaymentDto;
 import com.turkcell.rentACarProject.business.dtos.rental.ListRentalDto;
@@ -119,7 +121,7 @@ public class PaymentManager implements PaymentService {
 
 		// this.rentalService.checkRentCarExists(rentalId);
 
-		var result = this.paymentDao.getAllByRentalId(rentalId);
+		List<Payment> result = this.paymentDao.getAllByRentalId(rentalId);
 		ListPaymentDto response = this.modelMapperService.forDto().map(result, ListPaymentDto.class);
 
 		return new SuccessDataResult<ListPaymentDto>(response);
@@ -128,20 +130,20 @@ public class PaymentManager implements PaymentService {
 	@Override
 	public boolean checkPaymentRentalId(int rentalId) {
 
-		var result = this.paymentDao.getAllByRentalId(rentalId);
+		List<Payment> result = this.paymentDao.getAllByRentalId(rentalId);
 		if (result != null) {
-			throw new BusinessException("Daha önce ödemesi alınmıştır.");
+			throw new BusinessException(Messages.ThisPaymentAlreadyExists);
 		}
 		return true;
 	}
 
 	private boolean checkPaymentExists(int paymentId) {
 
-		var result = this.paymentDao.existsById(paymentId);
+		boolean result = this.paymentDao.existsById(paymentId);
 		if (result) {
 			return true;
 		}
-		throw new BusinessException("Payment için geçersiz Id..!!!!");
+		throw new BusinessException(Messages.PaymentIdNotFound);
 	}
 
 	private double rentalCalculation(ListRentalDto rental) {

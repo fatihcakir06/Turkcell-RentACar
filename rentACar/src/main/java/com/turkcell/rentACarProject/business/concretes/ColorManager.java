@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.ColorService;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.color.ListColorDto;
 import com.turkcell.rentACarProject.business.requests.color.CreateColorRequest;
 import com.turkcell.rentACarProject.business.requests.color.DeleteColorRequest;
@@ -30,7 +31,7 @@ public class ColorManager implements ColorService {
 
 	@Override
 	public List<ListColorDto> getAll() {
-		var result = this.colorDao.findAll();
+		List<Color> result = this.colorDao.findAll();
 		List<ListColorDto> response = result.stream()
 				.map(color -> this.modelMapperService.forDto().map(color, ListColorDto.class))
 				.collect(Collectors.toList());

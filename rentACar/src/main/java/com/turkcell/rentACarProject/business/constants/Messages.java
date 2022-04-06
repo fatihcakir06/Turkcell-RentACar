@@ -21,4 +21,10 @@ public class Messages {
 	public static final String RentalNotFoundCar = "rental.not.found.car";
 	public static final String AdditionalServiceItemAlreadyExists = "additional.service.item.already.exists";
 	public static final String AdditionalServiceItemIsNotFound = "additional.service.item.not.found";
+	public static final String BrandNameIsAlreadyExists = "brand.name.already.exists";
+	public static final String BrandIdNotFound = "brand.id.not.found";
+	public static final String CarIdNotFound = "car.id.not.found";
+	public static final String PaymentIdNotFound = "payment.id.not.found";
+	public static final String ThisPaymentAlreadyExists = "this.payment.already.exists";
+	public static final String RentalIdNotFound = "rental.id.not.found";
 }

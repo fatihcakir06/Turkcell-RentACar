@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.CreditCardDetailsService;
 import com.turkcell.rentACarProject.business.constants.Messages;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.creditCardDetails.ListCreditCardDetailsDto;
 import com.turkcell.rentACarProject.business.requests.creditCardDetails.CreateCreditCardDetailsRequest;
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
@@ -36,7 +37,7 @@ public class CreditCardDetailsManager implements CreditCardDetailsService {
 	@Override
 	public DataResult<List<ListCreditCardDetailsDto>> getAll() {
 		
-		var result = this.creditCardDetailsDao.findAll();
+		List<CreditCardDetails> result = this.creditCardDetailsDao.findAll();
 		
 		List<ListCreditCardDetailsDto> response = result.stream()
 				.map(creditCardDetails -> this.modelMapperService.forDto().map(creditCardDetails, ListCreditCardDetailsDto.class))
@@ -63,7 +64,7 @@ public class CreditCardDetailsManager implements CreditCardDetailsService {
 	@Override
 	public DataResult<List<ListCreditCardDetailsDto>> getAllByCustomerId(int customerId) {
 		
-		var result = this.creditCardDetailsDao.findAllByCustomerId(customerId);
+		List<CreditCardDetails> result = this.creditCardDetailsDao.findAllByCustomerId(customerId);
 		
 		List<ListCreditCardDetailsDto> response = result.stream()
 				.map(creditCardDetails -> this.modelMapperService.forDto().map(creditCardDetails, ListCreditCardDetailsDto.class))

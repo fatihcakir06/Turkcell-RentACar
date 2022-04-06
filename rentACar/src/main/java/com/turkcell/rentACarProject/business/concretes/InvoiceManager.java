@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.InvoiceService;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.invoice.ListInvoiceDto;
 import com.turkcell.rentACarProject.business.requests.invoice.CreateInvoiceRequest;
 import com.turkcell.rentACarProject.business.requests.invoice.DeleteInvoiceRequest;
@@ -33,7 +34,7 @@ public class InvoiceManager implements InvoiceService{
 
 	@Override
 	public DataResult<List<ListInvoiceDto>> getAll() {
-		var result = this.invoiceDao.findAll();
+		List<Invoice> result = this.invoiceDao.findAll();
 		List<ListInvoiceDto> response = result.stream()
 				.map(brand -> this.modelMapperService.forDto().map(brand, ListInvoiceDto.class))
 				.collect(Collectors.toList());

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.CorporateCustomerService;
 import com.turkcell.rentACarProject.business.constants.Messages;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.corporateCustomer.ListCorporateCustomerDto;
 import com.turkcell.rentACarProject.business.requests.corporateCustomer.CreateCorporateCustomerRequest;
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
@@ -35,7 +36,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 	@Override
 	public DataResult<List<ListCorporateCustomerDto>> getAll() {
 
-		var result = this.corporateCustomerDao.findAll();
+		List<CorporateCustomer> result = this.corporateCustomerDao.findAll();
 		
 		List<ListCorporateCustomerDto> response = result.stream()
 				.map(corporateCustomer -> this.modelMapperService.forDto().map(corporateCustomer, ListCorporateCustomerDto.class))

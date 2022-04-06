@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.IndividualCustomerService;
 import com.turkcell.rentACarProject.business.constants.Messages;
+import com.turkcell.rentACarProject.business.dtos.city.ListCityDto;
 import com.turkcell.rentACarProject.business.dtos.individualCustomer.ListIndividualCustomerDto;
 import com.turkcell.rentACarProject.business.requests.individualCustomer.CreateIndividualCustomerRequest;
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
@@ -35,7 +36,7 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 	@Override
 	public DataResult<List<ListIndividualCustomerDto>> getAll() {
 		
-		var result = this.individualCustomerDao.findAll();
+		List<IndividualCustomer> result = this.individualCustomerDao.findAll();
 		
 		List<ListIndividualCustomerDto> response = result.stream()
 				.map(customer -> this.modelMapperService.forDto().map(customer, ListIndividualCustomerDto.class))

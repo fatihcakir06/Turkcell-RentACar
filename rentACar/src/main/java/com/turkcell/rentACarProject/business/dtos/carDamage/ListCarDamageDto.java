@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListCarDamageDto {
 	
-	int id;
-	String description;
-	Car car;
+	private int id;
+	private String description;
+	private int carId;
 
 }

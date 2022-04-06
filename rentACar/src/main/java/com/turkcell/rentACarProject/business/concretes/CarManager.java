@@ -39,7 +39,7 @@ public class CarManager implements CarService {
 	@Override
 	public DataResult<List<ListCarDto>> getAll() {
 		
-		var result = this.carDao.findAll();
+		List<Car> result = this.carDao.findAll();
 		
 		List<ListCarDto> response = result.stream()
 				.map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class))
@@ -47,9 +47,25 @@ public class CarManager implements CarService {
 		
 		return new SuccessDataResult<List<ListCarDto>>(response);
 	}
+	
+	@Override
+	public DataResult<ListCarDto> getById(int id) {
+		
+		Car result = this.carDao.getById(id);
+		
+		if(result == null) {
+			
+			return new ErrorDataResult<ListCarDto>("Car.NotFound");
+		}
+		
+		ListCarDto response = this.modelMapperService.forDto().map(result, ListCarDto.class);
+		
+		return new SuccessDataResult<ListCarDto>(response);
+	}
 
 	@Override
 	public Result create(CreateCarRequest createCarRequest) {
+		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		this.carDao.save(car);
 		return new SuccessResult(Messages.CarAdded);
@@ -71,20 +87,7 @@ public class CarManager implements CarService {
 		
 	}
 
-	@Override
-	public DataResult<ListCarDto> getById(int id) {
-		
-		Car result = this.carDao.getCarById(id);
-		
-		if(result == null) {
-			
-			return new ErrorDataResult<ListCarDto>("Car.NotFound");
-		}
-		
-		ListCarDto response = this.modelMapperService.forDto().map(result, ListCarDto.class);
-		
-		return new SuccessDataResult<ListCarDto>(response);
-	}
+	
 
 	@Override
 	public DataResult<List<ListCarDto>> getAllPaged(int pageNo, int pageSize) {

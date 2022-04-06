@@ -13,12 +13,12 @@ import com.turkcell.rentACarProject.business.requests.additionalServiceItem.Crea
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarProject.core.utilities.results.DataResult;
-import com.turkcell.rentACarProject.core.utilities.results.ErrorDataResult;
 import com.turkcell.rentACarProject.core.utilities.results.Result;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessResult;
 import com.turkcell.rentACarProject.dataAccess.abstracts.AdditionalServiceItemDao;
 import com.turkcell.rentACarProject.entities.concretes.AdditionalServiceItem;
+import com.turkcell.rentACarProject.entities.concretes.Rental;
 
 @Service
 public class AdditionalServiceItemManager implements AdditionalServiceItemService {
@@ -61,7 +61,7 @@ public class AdditionalServiceItemManager implements AdditionalServiceItemServic
 	@Override
 	public DataResult<List<ListAdditionalServiceItemDto>> getAll() {
 		
-		var result = this.additionalServiceItemDao.findAll();
+		List<AdditionalServiceItem> result = this.additionalServiceItemDao.findAll();
 		
 		List<ListAdditionalServiceItemDto> response = result.stream()
 				.map(additionalServiceItem -> this.modelMapperService.forDto().map(additionalServiceItem, ListAdditionalServiceItemDto.class))
@@ -72,7 +72,7 @@ public class AdditionalServiceItemManager implements AdditionalServiceItemServic
 	
 	private Result checkIfAdditionalServiceItemExistsByName(String itemName) {
 		
-		if (additionalServiceItemDao.existsByColorName(itemName)) {
+		if (additionalServiceItemDao.existsByName(itemName)) {
 			throw new BusinessException(Messages.AdditionalServiceItemAlreadyExists);
 		}
 		

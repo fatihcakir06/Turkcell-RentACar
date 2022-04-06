@@ -34,7 +34,7 @@ public class CityManager implements CityService{
 	@Override
 	public DataResult<List<ListCityDto>> getAll() {
 		
-		var result = this.cityDao.findAll();
+		List<City> result = this.cityDao.findAll();
 		
 		List<ListCityDto> response = result.stream()
 				.map(city -> this.modelMapperService.forDto().map(city, ListCityDto.class))

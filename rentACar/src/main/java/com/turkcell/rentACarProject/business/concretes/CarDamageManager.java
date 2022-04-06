@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentACarProject.business.abstracts.CarDamageService;
+import com.turkcell.rentACarProject.business.constants.Messages;
 import com.turkcell.rentACarProject.business.dtos.carDamage.ListCarDamageDto;
 import com.turkcell.rentACarProject.business.requests.carDamage.CreateCarDamageRequest;
 import com.turkcell.rentACarProject.business.requests.carDamage.UpdateCarDamageRequest;
+import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarProject.core.utilities.results.DataResult;
 import com.turkcell.rentACarProject.core.utilities.results.Result;
@@ -17,6 +19,7 @@ import com.turkcell.rentACarProject.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessResult;
 import com.turkcell.rentACarProject.dataAccess.abstracts.CarDamageDao;
 import com.turkcell.rentACarProject.entities.concretes.CarDamage;
+import com.turkcell.rentACarProject.entities.concretes.Rental;
 
 @Service
 public class CarDamageManager implements CarDamageService {
@@ -33,7 +36,7 @@ public class CarDamageManager implements CarDamageService {
 	@Override
 	public DataResult<List<ListCarDamageDto>> getAll() {
 		
-		var result = this.carDamageDao.findAll();
+		List<CarDamage> result = this.carDamageDao.findAll();
 		List<ListCarDamageDto> response = result.stream()
 				.map(carDamage -> this.modelMapperService.forDto().map(carDamage, ListCarDamageDto.class))
 				.collect(Collectors.toList());
@@ -43,6 +46,8 @@ public class CarDamageManager implements CarDamageService {
 
 	@Override
 	public DataResult<List<ListCarDamageDto>> getAllByCarId(int id) {
+		
+		checkIfCarIdExists(id);
 		
 		List<ListCarDamageDto> carDamageList = this.carDamageDao.getAllByCarId(id);
 		
@@ -74,6 +79,14 @@ public class CarDamageManager implements CarDamageService {
         	carDamageDao.deleteById(id);
             return new SuccessResult("CarMaintenance.Deleted");
            
+	}
+	
+	private Result checkIfCarIdExists(int carId) {
+		if (!carDamageDao.existsByCarId(carId)) {
+			throw new BusinessException(Messages.CarIdNotFound);
+		}
+		
+		return new SuccessResult();
 	}
 
 }
