@@ -14,6 +14,7 @@ import com.turkcell.rentACarProject.business.abstracts.CarService;
 import com.turkcell.rentACarProject.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentACarProject.business.abstracts.RentalService;
 import com.turkcell.rentACarProject.business.constants.Messages;
+import com.turkcell.rentACarProject.business.dtos.car.ListCarDto;
 import com.turkcell.rentACarProject.business.dtos.orderedAdditionalService.ListOrderedAdditionalServiceDto;
 import com.turkcell.rentACarProject.business.dtos.rental.ListRentalDto;
 import com.turkcell.rentACarProject.business.requests.rental.CreateRentalRequest;
@@ -27,6 +28,7 @@ import com.turkcell.rentACarProject.core.utilities.results.Result;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessResult;
 import com.turkcell.rentACarProject.dataAccess.abstracts.RentalDao;
+import com.turkcell.rentACarProject.entities.concretes.Car;
 import com.turkcell.rentACarProject.entities.concretes.Rental;
 
 @Service
@@ -72,8 +74,12 @@ public class RentalManager implements RentalService {
 		carMaintenanceService.isCarInMaintenance(createRentalRequest.getCarId());
 		isCarRented(createRentalRequest.getCarId());
 		checkCarIdExists(createRentalRequest.getCarId());
-
+		
+		
+		
 		Rental rental = this.modelMapperService.forRequest().map(createRentalRequest, Rental.class);
+		
+		//	createRentalRequest.setInitialMileage(createRentalRequest.getCarId());
 		this.rentalDao.save(rental);
 
 		return new SuccessResult(Messages.RentalAdded);

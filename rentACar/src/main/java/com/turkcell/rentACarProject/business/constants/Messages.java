@@ -1,7 +1,7 @@
 package com.turkcell.rentACarProject.business.constants;
 
 public class Messages {
-	
+	public static final String Welcome = "Welcome Fatih Cakir's Project";
 	public static final String CarMaintenanceAdded = "carMaintenance.added";
 	public static final String CarMaintenanceDeleted = "carMaintenance.deleted";
 	public static final String CarMaintenanceUpdated = "carMaintenance.updated";
@@ -27,4 +27,7 @@ public class Messages {
 	public static final String PaymentIdNotFound = "payment.id.not.found";
 	public static final String ThisPaymentAlreadyExists = "this.payment.already.exists";
 	public static final String RentalIdNotFound = "rental.id.not.found";
+
+	public static final String ColorAlreadyExists = "color.already.exists";
+	public static final String ColorIdNotFound = "color.id.not.found";
 }

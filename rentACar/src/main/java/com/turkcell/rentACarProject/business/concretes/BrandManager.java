@@ -14,6 +14,7 @@ import com.turkcell.rentACarProject.business.requests.brand.DeleteBrandRequest;
 import com.turkcell.rentACarProject.business.requests.brand.UpdateBrandRequest;
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.mapping.ModelMapperService;
+import com.turkcell.rentACarProject.core.utilities.results.DataResult;
 import com.turkcell.rentACarProject.core.utilities.results.Result;
 import com.turkcell.rentACarProject.core.utilities.results.SuccessResult;
 import com.turkcell.rentACarProject.dataAccess.abstracts.BrandDao;
@@ -75,6 +76,16 @@ public class BrandManager implements BrandService {
 
 	}
 	
+
+	@Override
+	public Result checkIfBrandIdIsExists(int brandId) {
+		if (!brandDao.existsById(brandId)) {
+			throw new BusinessException(Messages.BrandIdNotFound);
+		}
+		
+		return new SuccessResult();
+	}
+	
 	private Result checkIfBrandExistsByName(String name) {
 		if (brandDao.existsByName(name)) {
 			throw new BusinessException(Messages.BrandNameIsAlreadyExists);
@@ -83,12 +94,6 @@ public class BrandManager implements BrandService {
 		return  new  SuccessResult();
 	}
 
+
 	
-	private Result checkIfBrandIdIsExists(int brandId) {
-		if (brandDao.existsById(brandId)) {
-			throw new BusinessException(Messages.BrandIdNotFound);
-		}
-		
-		return new SuccessResult();
-	}
 }

@@ -9,12 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.turkcell.rentACarProject.business.abstracts.BrandService;
 import com.turkcell.rentACarProject.business.abstracts.CarService;
+import com.turkcell.rentACarProject.business.abstracts.ColorService;
 import com.turkcell.rentACarProject.business.constants.Messages;
 import com.turkcell.rentACarProject.business.dtos.car.ListCarDto;
 import com.turkcell.rentACarProject.business.requests.car.CreateCarRequest;
 import com.turkcell.rentACarProject.business.requests.car.DeleteCarRequest;
 import com.turkcell.rentACarProject.business.requests.car.UpdateCarRequest;
+import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACarProject.core.utilities.results.DataResult;
 import com.turkcell.rentACarProject.core.utilities.results.ErrorDataResult;
@@ -28,12 +31,16 @@ import com.turkcell.rentACarProject.entities.concretes.Car;
 public class CarManager implements CarService {
 	
 	private CarDao carDao;
+	private BrandService brandService;
+	private ColorService colorService;
 	private ModelMapperService modelMapperService;
 
 	@Autowired
-	public CarManager(CarDao carDao, ModelMapperService modelMapperService) {
+	public CarManager(CarDao carDao, ModelMapperService modelMapperService,ColorService colorService,BrandService brandService) {
 		this.carDao = carDao;
 		this.modelMapperService = modelMapperService;
+		this.brandService= brandService;
+		this.colorService=colorService;
 	}
 
 	@Override
@@ -65,6 +72,9 @@ public class CarManager implements CarService {
 
 	@Override
 	public Result create(CreateCarRequest createCarRequest) {
+		
+		brandService.checkIfBrandIdIsExists(createCarRequest.getBrandId());
+		colorService.checkIfColorIdIsExists(createCarRequest.getColorId());
 		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		this.carDao.save(car);
@@ -134,6 +144,8 @@ public class CarManager implements CarService {
 		
 		return new SuccessDataResult<>(response);
 	}
+	
+	
 
 
 

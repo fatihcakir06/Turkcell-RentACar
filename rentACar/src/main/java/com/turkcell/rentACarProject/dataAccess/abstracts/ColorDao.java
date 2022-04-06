@@ -14,5 +14,7 @@ public interface ColorDao extends JpaRepository<Color, Integer>{
 	Color getColorById(int id);
 	
 	List<Brand> getColorByName(String name);
+	
+	boolean existsByName(String name);
 
 }

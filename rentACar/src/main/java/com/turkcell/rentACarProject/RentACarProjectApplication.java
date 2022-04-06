@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.turkcell.rentACarProject.business.constants.Messages;
 import com.turkcell.rentACarProject.core.exceptions.BusinessException;
 import com.turkcell.rentACarProject.core.utilities.results.ErrorDataResult;
 
@@ -23,6 +24,7 @@ public class RentACarProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RentACarProjectApplication.class, args);
+		System.out.println(Messages.Welcome);
 	}
 
 	@Bean
