@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentACarProject.business.abstracts.AdditionalServiceItemService;
 import com.turkcell.rentACarProject.business.abstracts.CarService;
@@ -59,7 +60,30 @@ public class PaymentManager implements PaymentService {
 	}
 
 	@Override
-	public Result add(CreatePaymentRequest createPaymentRequest) {
+	public Result addForCorporateCustomer(CreatePaymentRequest createPaymentRequest) {
+
+		// this.rentalService.checkRentCarExists(createPaymentRequest.getRentalId());
+		checkPaymentRentalId(createPaymentRequest.getRentalId());
+
+		ListRentalDto rental = rentalService.getById(createPaymentRequest.getRentalId()).getData();
+
+		double totalPrice = rentalCalculation(rental);
+
+		this.bankAdapterService.checkIfLimitIsEnough(createPaymentRequest.getCardNo(), createPaymentRequest.getYear(),
+				createPaymentRequest.getMounth(), createPaymentRequest.getCVV(), totalPrice);
+
+		Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
+
+		payment.setTotalPayment(totalPrice);
+
+		payment.setId(0);
+		this.paymentDao.save(payment);
+
+		return new SuccessResult();
+	}
+	
+	@Override
+	public Result addForIndividualCustomer(CreatePaymentRequest createPaymentRequest) {
 
 		// this.rentalService.checkRentCarExists(createPaymentRequest.getRentalId());
 		checkPaymentRentalId(createPaymentRequest.getRentalId());

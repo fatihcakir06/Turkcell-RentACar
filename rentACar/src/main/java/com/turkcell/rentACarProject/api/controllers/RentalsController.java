@@ -48,9 +48,14 @@ public class RentalsController {
 		return this.rentalService.delete(deleteCarRequest);		
 	}
 
-	@PutMapping("/update")
-	Result update(UpdateRentalRequest updateCarRequest) {
-		return this.rentalService.update(updateCarRequest);
+	@PutMapping("/updateCorporateCustomer")
+	Result updateCorporateCustomer(UpdateRentalRequest updateCarRequest) {
+		return this.rentalService.updateForCorporateCustomer(updateCarRequest);
+	}
+	
+	@PutMapping("/updateIndividualCustomer")
+	Result updateIndividualCustomer(UpdateRentalRequest updateCarRequest) {
+		return this.rentalService.updateForIndividualCustomer(updateCarRequest);
 	}
 
 	@GetMapping("/getAll")

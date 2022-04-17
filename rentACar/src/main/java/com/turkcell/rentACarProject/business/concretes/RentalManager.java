@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentACarProject.business.abstracts.AdditionalServiceItemService;
 import com.turkcell.rentACarProject.business.abstracts.CarMaintenanceService;
@@ -87,7 +88,20 @@ public class RentalManager implements RentalService {
 
 
 	@Override
-	public Result update(UpdateRentalRequest updateRentalRequest) {
+	public Result updateForCorporateCustomer(UpdateRentalRequest updateRentalRequest) {
+
+		carMaintenanceService.isCarInMaintenance(updateRentalRequest.getCarId());
+
+		Rental rental = this.modelMapperService.forRequest().map(updateRentalRequest, Rental.class);
+		rental.setTotalPrice(rentalCalculation(rental));
+		updateReturnMileage(rental);
+		this.rentalDao.save(rental);
+
+		return new SuccessResult(Messages.CarUpdated);
+	}
+	
+	@Override
+	public Result updateForIndividualCustomer(UpdateRentalRequest updateRentalRequest) {
 
 		carMaintenanceService.isCarInMaintenance(updateRentalRequest.getCarId());
 

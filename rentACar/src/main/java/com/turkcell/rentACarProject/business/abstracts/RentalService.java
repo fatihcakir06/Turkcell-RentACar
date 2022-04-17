@@ -18,7 +18,9 @@ public interface RentalService {
 	
 	Result delete(DeleteRentalRequest deleteCarRequest);
 
-	Result update(UpdateRentalRequest updateCarRequest);
+	Result updateForCorporateCustomer(UpdateRentalRequest updateCarRequest);
+	
+	Result updateForIndividualCustomer(UpdateRentalRequest updateRentalRequest);
 
 	DataResult<List<ListRentalDto>> getAll();
 	
@@ -27,5 +29,6 @@ public interface RentalService {
 	DataResult<ListRentalDto> getById(int id);
 
 	Result isCarRented(int carId) throws BusinessException;
+
 	
 }

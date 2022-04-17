@@ -54,8 +54,6 @@ public class Rental {
 	@OneToMany(mappedBy = "rental")
 	private List<Payment> payment;
 	
-	
-	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;

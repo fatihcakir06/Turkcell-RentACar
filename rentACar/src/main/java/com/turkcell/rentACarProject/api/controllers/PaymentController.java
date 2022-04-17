@@ -31,11 +31,18 @@ public class PaymentController {
 	public PaymentController(PaymentService paymentService) {		
 		this.paymentService = paymentService;
 	}
-	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreatePaymentRequest createPaymentRequest)  {
-		return this.paymentService.add(createPaymentRequest);
+	@PostMapping("/addForCorporateCustomer")
+	public Result addForCorporateCustomer(@RequestBody @Valid CreatePaymentRequest createPaymentRequest)  {
+		return this.paymentService.addForCorporateCustomer(createPaymentRequest);
 	}
-
+	
+	
+	@PostMapping("/addForCorporateCustomer")
+	public Result addForIndividualCustomer(@RequestBody @Valid CreatePaymentRequest createPaymentRequest)  {
+		return this.paymentService.addForIndividualCustomer(createPaymentRequest);
+	}
+	
+	
 	@DeleteMapping("/delete")
 	public Result delete(@RequestBody @Valid DeletePaymentRequest deletePaymentRequest)  {
 		return this.paymentService.delete(deletePaymentRequest);

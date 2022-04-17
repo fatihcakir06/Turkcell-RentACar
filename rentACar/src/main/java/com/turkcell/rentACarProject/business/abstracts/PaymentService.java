@@ -11,7 +11,9 @@ import com.turkcell.rentACarProject.core.utilities.results.Result;
 
 public interface PaymentService {
 
-	Result add(CreatePaymentRequest createPaymentRequest);
+	
+	Result addForIndividualCustomer(CreatePaymentRequest createPaymentRequest);
+	Result addForCorporateCustomer(CreatePaymentRequest createPaymentRequest);
 	Result delete(DeletePaymentRequest deletePaymentRequest);
 
 	DataResult<List<ListPaymentDto>> getAll();
@@ -21,4 +23,5 @@ public interface PaymentService {
 	
 	
 	boolean checkPaymentRentalId(int rentalId);
+
 }
